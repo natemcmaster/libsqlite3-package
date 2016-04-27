@@ -8,10 +8,10 @@ Structure
 sqlite
 └── sqlite.nuspec
 sqlite.native
+├── sqlite.native.nuspec
 ├── build
 │   └── net45
 │       └── sqlite.native.props
-├── sqlite.native.nuspec
 └── runtimes
     ├── linux-x64
     │   └── native
@@ -28,8 +28,8 @@ sqlite.native
     └── win7-x86
         └── native
             └── sqlite3.dll (compiled for Win32)
-sqlite.uap.native
-├── sqlite.uap.native.nuspec
+sqlite.uwp.native
+├── sqlite.uwp.native.nuspec
 └── runtimes
     ├── win10-arm
     │   └── native
