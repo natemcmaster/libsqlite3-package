@@ -1,0 +1,10 @@
+{
+    "version": "3.12.0-*",
+    "frameworks": {
+        "netstandard1.0": { }
+    },
+    "packInclude": {
+        "build/": "build/**",
+        "runtimes/": "runtimes/**"
+    }
+}
