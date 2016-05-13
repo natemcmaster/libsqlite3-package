@@ -1,9 +1,0 @@
-{
-    "version": "3.12.0-*",
-    "frameworks": {
-        "uap10.0": { }
-    },
-    "packInclude": {
-        "runtimes/": "runtimes/**"
-    }
-}

@@ -1,0 +1,27 @@
+{
+    "version": "3.12.2-*",
+    "description": "Native libraries for using SQLite in UWP applications.",
+    "authors": [
+        "SQLite"
+    ],
+    "packOptions": {
+        "repository": {
+            "type": "git",
+            "url": "git://github.com/aspnet/libsqlite3-package"
+        },
+        "tags": [
+            "sqlite3",
+            "libsqlite3"
+        ],
+        "files": {
+            "mappings": {
+                "runtimes/win10-x64/native/": "runtimes/win10-x64/native/*",
+                "runtimes/win10-x86/native/": "runtimes/win10-x86/native/*",
+                "runtimes/win10-arm/native/": "runtimes/win10-arm/native/*"
+            }
+        }
+    },
+    "frameworks": {
+        "uap10.0": { }
+    }
+}

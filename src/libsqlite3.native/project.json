@@ -1,0 +1,27 @@
+{
+    "version": "3.12.2-*",
+    "description": "Native libraries for using SQLite in desktop and server applications.",
+    "authors": [
+        "SQLite"
+    ],
+    "packOptions": {
+        "repository": {
+            "type": "git",
+            "url": "git://github.com/aspnet/libsqlite3-package"
+        },
+        "tags": [
+            "sqlite3",
+            "libsqlite3"
+        ],
+        "files": {
+            "mappings": {
+                "runtimes/win7-x64/native/": "runtimes/win7-x64/native/*",
+                "runtimes/win7-x86/native/": "runtimes/win7-x86/native/*",
+                "build/net45/": "build/net45/*"
+            }
+        }
+    },
+    "frameworks": {
+        "netstandard1.0": { }
+    }
+}
