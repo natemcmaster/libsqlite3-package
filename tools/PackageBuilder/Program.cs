@@ -14,17 +14,10 @@ namespace PackageBuilder
                 var slnRoot = Directory.GetCurrentDirectory();
                 try 
                 {
-                    Directory.SetCurrentDirectory("src/libsqlite3.uwp.native");
+                    Directory.SetCurrentDirectory(Path.Combine(slnRoot, "src/sqlite.uwp.native"));
                     UwpPackage.Build(SqliteVersion);
-                }
-                finally
-                {
-                    Directory.SetCurrentDirectory(slnRoot);
-                }
-                
-                try 
-                {
-                    Directory.SetCurrentDirectory("src/libsqlite3.native");
+
+                    Directory.SetCurrentDirectory(Path.Combine(slnRoot, "src/sqlite.native"));
                     NativePackage.Build(SqliteVersion);
                 }
                 finally

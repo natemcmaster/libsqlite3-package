@@ -1,67 +1,61 @@
-$ErrorActionPreference = "Stop"
+[cmdletbinding(PositionalBinding = $false)]
+param(
+   [string]$VersionSuffix=$env:DOTNET_BUILD_VERSION
+)
 
-function DownloadWithRetry([string] $url, [string] $downloadLocation, [int] $retries) 
-{
-    while($true)
-    {
-        try
-        {
-            Invoke-WebRequest $url -OutFile $downloadLocation
-            break
-        }
-        catch
-        {
-            $exceptionMessage = $_.Exception.Message
-            Write-Host "Failed to download '$url': $exceptionMessage"
-            if ($retries -gt 0) {
-                $retries--
-                Write-Host "Waiting 10 seconds before retrying. Retries left: $retries"
-                Start-Sleep -Seconds 10
+$ErrorActionPreference="Stop"
+$ProgressPreference="SilentlyContinue"
 
-            }
-            else 
-            {
-                $exception = $_.Exception
-                throw $exception
-            }
-        }
+$installDir = ".dotnet/"
+$dotnet = "$installDir/dotnet.exe"
+
+function log($msg) {
+    Write-Host -ForegroundColor Cyan "info : $msg"
+}
+
+function dotnet() {
+    log "dotnet $($args -join ' ')"
+    & $dotnet @args
+    if($LASTEXITCODE -ne 0) {
+        Write-Error "dotnet command failed"
     }
 }
 
-cd $PSScriptRoot
-
-$repoFolder = $PSScriptRoot
-$env:REPO_FOLDER = $repoFolder
-
-$koreBuildZip="https://github.com/aspnet/KoreBuild/archive/dev.zip"
-if ($env:KOREBUILD_ZIP)
-{
-    $koreBuildZip=$env:KOREBUILD_ZIP
+if (!(Test-Path $installDir)) { 
+    mkdir $installDir | out-null
 }
 
-$buildFolder = ".build"
-$buildFile="$buildFolder\KoreBuild.ps1"
-
-if (!(Test-Path $buildFolder)) {
-    Write-Host "Downloading KoreBuild from $koreBuildZip"    
-    
-    $tempFolder=$env:TEMP + "\KoreBuild-" + [guid]::NewGuid()
-    New-Item -Path "$tempFolder" -Type directory | Out-Null
-
-    $localZipFile="$tempFolder\korebuild.zip"
-    
-    DownloadWithRetry -url $koreBuildZip -downloadLocation $localZipFile -retries 6
-
-    Add-Type -AssemblyName System.IO.Compression.FileSystem
-    [System.IO.Compression.ZipFile]::ExtractToDirectory($localZipFile, $tempFolder)
-    
-    New-Item -Path "$buildFolder" -Type directory | Out-Null
-    copy-item "$tempFolder\**\build\*" $buildFolder -Recurse
-
-    # Cleanup
-    if (Test-Path $tempFolder) {
-        Remove-Item -Recurse -Force $tempFolder
-    }
+if (Test-Path artifacts) {
+    log "Clean aritfacts"
+    Remove-Item -Recurse -Force artifacts/
 }
 
-&"$buildFile" $args
+if(!(Test-Path $dotnet)) {
+    $dotnetVersion = Get-Content ".dotnet-version"
+    log "Install dotnet $dotnetVersion"
+    
+    iwr https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.ps1 -outfile "$installDir/dotnet-install.ps1"
+    & "$installDir/dotnet-install.ps1" -InstallDir $installDir -Version $dotnetVersion
+}
+
+dotnet restore --verbosity minimal
+dotnet run -p tools/PackageBuilder/
+
+if(!($VersionSuffix)) {
+    $date=get-date -u "%s"
+    $date=$date.Substring(0, $date.IndexOf('.'))
+    $VersionSuffix="t$date"
+}
+
+Get-ChildItem src/*/project.json | % {
+    dotnet pack $_ -o artifacts/build/ --version-suffix $VersionSuffix
+}
+log "Cleanup useless symbols packages"
+Remove-Item artifacts/build/*.symbols.nupkg
+
+$git=(Get-Command git).Path
+if($git) {
+    log "Add commit hash to artifacts dir"
+    & $git rev-parse HEAD >> artifacts/commit 
+}
+Write-Host -ForegroundColor Green "Done"

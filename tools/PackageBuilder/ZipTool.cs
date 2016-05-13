@@ -12,12 +12,14 @@ namespace PackageBuilder
             string uri,
             params Tuple<string, string>[] files)
         {
+            Console.WriteLine($"info : downloading {uri}");
             using (var client = new HttpClient())
             using (var archiveStream = client.GetStreamAsync(uri).Result)
             using (var archive = new ZipArchive(archiveStream))
             {
                 foreach (var file in files)
                 {
+                    Console.WriteLine($"info : extract {file.Item1} -> {Path.Combine(Directory.GetCurrentDirectory(), file.Item2)}");
                     var entry = archive.GetEntry(file.Item1);
                     if (entry == null)
                     {
