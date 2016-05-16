@@ -53,9 +53,4 @@ Get-ChildItem src/*/project.json | % {
 log "Cleanup useless symbols packages"
 Remove-Item artifacts/build/*.symbols.nupkg
 
-$git=(Get-Command git).Path
-if($git) {
-    log "Add commit hash to artifacts dir"
-    & $git rev-parse HEAD >> artifacts/commit 
-}
 Write-Host -ForegroundColor Green "Done"
