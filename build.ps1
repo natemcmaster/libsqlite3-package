@@ -39,7 +39,7 @@ if(!(Test-Path $dotnet)) {
 }
 
 dotnet restore --verbosity minimal
-dotnet run -p tools/PackageBuilder/
+dotnet run -p tools/PackageBuilder/ --osx binaries/osx-x64.zip --linux binaries/linux-x64.zip
 
 if(!($VersionSuffix)) {
     $date=get-date -u "%s"
