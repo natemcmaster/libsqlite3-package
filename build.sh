@@ -36,12 +36,13 @@ done
 installDir=".dotnet/"
 dotnet="$installDir/dotnet"
 
-dotnet() {
+_dotnet() {
     log "dotnet $@"
     $dotnet $@
 }
 
 _clean() {
+    log "Clean $(pwd)/artifacts/"
     rm -rf artifacts
     mkdir -p artifacts
 }
@@ -55,12 +56,13 @@ _compile() {
     rm -rf obj/build/
     mkdir -p obj/build/
     
-    curl -sSL $sqliteSrc | tar zvx - -C obj/build/
+    curl -sSL $sqliteSrc | tar zvx -C obj/build/
     if [[ "$(uname)" == "Darwin" ]]; then
-        artifactsDir="$(pwd)/artifacts/osx-64"
+        rid="osx-x64"
     else
-        artifactsDir="$(pwd)/artifacts/linux-64"
+        rid="linux-x64"
     fi
+    artifactsDir="$(pwd)/artifacts/$rid"
     mkdir -p $artifactsDir
     
     srcDir="obj/build/sqlite-autoconf-${sqliteVersion}"
@@ -82,17 +84,27 @@ _compile() {
         fi
         
     popd
+    zip -j artifacts/$rid.zip $artifactsDir/libsqlite3*
 }
 
 _package() {
-    dotnet run -p tools/PackageBuilder/ $@
+    if [[ ! -e $dotnet ]]; then
+        dotnetVersion="$(cat .dotnet-version)"
+        log "Install dotnet $dotnetVersion"
+        
+        curl https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.sh | bash -s -- -i $installDir -v $dotnetVersion
+    fi
+
+    _dotnet restore --verbosity minimal
+
+    _dotnet run -p tools/PackageBuilder/ $@
 
     if [[ "$versionSuffix" == "" ]]; then
         versionSuffix="t$(date "+%s")"
     fi
 
     for f in src/*/project.json; do
-        dotnet pack $f -o artifacts/build/ --version-suffix $versionSuffix
+        _dotnet pack $f -o artifacts/build/ --version-suffix $versionSuffix
     done
 
     log "Cleanup useless symbols packages"
@@ -102,16 +114,7 @@ _package() {
 # main
 log "Build target = $buildTarget"
 
-if [[ ! -e $dotnet ]]; then
-    dotnetVersion="$(cat .dotnet-version)"
-    log "Install dotnet $dotnetVersion"
-    
-    curl https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.sh | bash -s -- -i $installDir -v $dotnetVersion
-fi
-
 _clean
-
-dotnet restore --verbosity minimal
 
 if [[ "$buildTarget" == "compile" ]]; then
     _compile

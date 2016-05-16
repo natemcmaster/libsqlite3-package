@@ -5,7 +5,7 @@ namespace PackageBuilder
     public class UwpPackage
     {
         public static void Build(string version)
-        {              
+        {
             ZipTool.DownloadAndExtract(
                 $"https://www.sqlite.org/2016/sqlite-uwp-{ version }.vsix",
                 Tuple.Create(

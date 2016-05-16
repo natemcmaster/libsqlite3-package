@@ -33,7 +33,7 @@ Options:
                             linux = args[++i];
                         break;
                         default:
-                            throw new Exception("Unrecognized argument " + args[i]);
+                            throw new ArgumentException("Unrecognized argument " + args[i]);
                     }
                 }
 

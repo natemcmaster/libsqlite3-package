@@ -26,7 +26,7 @@ namespace PackageBuilder
         {
             if (!File.Exists(filePath))
             {
-                throw new Exception("Could not find file " + Path.Combine(Directory.GetCurrentDirectory(), filePath));
+                throw new FileNotFoundException("Could not find file " + Path.Combine(Directory.GetCurrentDirectory(), filePath));
             }
 
             using (var archiveStream = new FileStream(filePath, FileMode.Open))
