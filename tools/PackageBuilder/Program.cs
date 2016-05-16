@@ -8,49 +8,47 @@ namespace PackageBuilder
         private const string SqliteVersion = "3120200";
 
         private static void PrintUsage()
-        {
-            Console.WriteLine(@"
+            => Console.WriteLine(@"
 Usage: packagebuilder --osx [filepath] --linux [filepath]
 Options:
 --osx [filepath]        Path to a zip containing libsqlite3.dylib for osx-x64
 --linux [filepath]      Path to a zip containing libsqlite3.so for linux-x64
 ");
-        }
-        
+
         public static int Main(string[] args)
         {
-            try 
+            try
             {
                 string osx = null, linux = null;
                 for (var i = 0; i < args.Length; i++)
                 {
-                    switch(args[i])
+                    switch (args[i])
                     {
                         case "--osx":
                             osx = args[++i];
-                        break;
+                            break;
                         case "--linux":
                             linux = args[++i];
-                        break;
+                            break;
                         default:
                             throw new ArgumentException("Unrecognized argument " + args[i]);
                     }
                 }
 
-                if (osx == null || linux == null)
-                {
-                    throw new Exception("Missing an argument");
-                }
+                if (osx == null)
+                    throw new ArgumentException("Missing a filepath for --osx");
+                if (linux == null)
+                    throw new ArgumentException("Missing a filepath for --linux");
 
                 var slnRoot = Directory.GetCurrentDirectory();
-                try 
+                try
                 {
                     Directory.SetCurrentDirectory(Path.Combine(slnRoot, "src/sqlite.uwp.native"));
                     UwpPackage.Build(SqliteVersion);
 
                     Directory.SetCurrentDirectory(Path.Combine(slnRoot, "src/sqlite.native"));
                     NativePackage.Build(SqliteVersion,
-                        osx:      Path.Combine(slnRoot, osx),
+                        osx: Path.Combine(slnRoot, osx),
                         linux: Path.Combine(slnRoot, linux)
                         );
                 }

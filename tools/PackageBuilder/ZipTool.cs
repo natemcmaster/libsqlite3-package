@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.IO.Packaging;
 using System.IO.Compression;
 using System.Net.Http;
 
@@ -48,7 +47,7 @@ namespace PackageBuilder
                     if (entry == null)
                     {
                         throw new FileNotFoundException("Could not find file '" + file.Item1 + "'.");
-                        
+
                     }
 
                     Directory.CreateDirectory(Path.GetDirectoryName(file.Item2));
