@@ -4,7 +4,7 @@ namespace PackageBuilder
 {
     public class NativePackage
     {
-        public static void Build(string version, string linuxX86, string linuxX64, string osx)
+        public static void Build(string version, string linux, string osx)
         {
             ZipTool.DownloadAndExtract(
                 $"https://www.sqlite.org/2016/sqlite-dll-win32-x86-{ version }.zip",
@@ -14,10 +14,7 @@ namespace PackageBuilder
                 $"https://www.sqlite.org/2016/sqlite-dll-win64-x64-{ version }.zip",
                 Tuple.Create("sqlite3.dll", "runtimes/win7-x64/native/sqlite3.dll"));   
 
-            ZipTool.OpenAndExtract(linuxX86,
-                Tuple.Create("libsqlite3.so", "runtimes/linux-x86/native/libsqlite3.so"));
-
-            ZipTool.OpenAndExtract(linuxX64,
+            ZipTool.OpenAndExtract(linux,
                 Tuple.Create("libsqlite3.so", "runtimes/linux-x64/native/libsqlite3.so"));
 
             ZipTool.OpenAndExtract(osx,

@@ -10,11 +10,10 @@ namespace PackageBuilder
         private static void PrintUsage()
         {
             Console.WriteLine(@"
-Usage: packagebuilder --osx [filepath] --linux-x86 [filepath] --linux-x64 [filepath]
+Usage: packagebuilder --osx [filepath] --linux [filepath]
 Options:
---osx [filepath]        Path to a zip containing libsqlite3.dylib
---linux-x86 [filepath]  Path to a zip containing libsqlite3.so for x86
---linux-x64 [filepath]  Path to a zip containing libsqlite3.so for x64
+--osx [filepath]        Path to a zip containing libsqlite3.dylib for osx-x64
+--linux [filepath]      Path to a zip containing libsqlite3.so for linux-x64
 ");
         }
         
@@ -22,7 +21,7 @@ Options:
         {
             try 
             {
-                string osx = null, linuxX86 = null, linuxX64 = null;
+                string osx = null, linux = null;
                 for (var i = 0; i < args.Length; i++)
                 {
                     switch(args[i])
@@ -30,18 +29,15 @@ Options:
                         case "--osx":
                             osx = args[++i];
                         break;
-                        case "--linux-x86":
-                            linuxX86 = args[++i];
-                        break;
-                        case "--linux-x64":
-                            linuxX64 = args[++i];
+                        case "--linux":
+                            linux = args[++i];
                         break;
                         default:
                             throw new Exception("Unrecognized argument " + args[i]);
                     }
                 }
 
-                if (osx == null || linuxX64 == null || linuxX86 == null)
+                if (osx == null || linux == null)
                 {
                     throw new Exception("Missing an argument");
                 }
@@ -55,8 +51,7 @@ Options:
                     Directory.SetCurrentDirectory(Path.Combine(slnRoot, "src/sqlite.native"));
                     NativePackage.Build(SqliteVersion,
                         osx:      Path.Combine(slnRoot, osx),
-                        linuxX64: Path.Combine(slnRoot, linuxX64),
-                        linuxX86: Path.Combine(slnRoot, linuxX86)
+                        linux: Path.Combine(slnRoot, linux)
                         );
                 }
                 finally

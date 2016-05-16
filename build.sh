@@ -47,8 +47,41 @@ _clean() {
 }
 
 _compile() {
-    log "Compiling sqlite"
-    dotnet run -p tools/SqliteCompiler/
+    sqliteVersion="3120200"
+    log "Compiling sqlite v$sqliteVersion"
+    sqliteSrc="https://sqlite.org/2016/sqlite-autoconf-${sqliteVersion}.tar.gz"
+    
+    log "Clean obj/build/"
+    rm -rf obj/build/
+    mkdir -p obj/build/
+    
+    curl -sSL $sqliteSrc | tar zvx - -C obj/build/
+    if [[ "$(uname)" == "Darwin" ]]; then
+        artifactsDir="$(pwd)/artifacts/osx-64"
+    else
+        artifactsDir="$(pwd)/artifacts/linux-64"
+    fi
+    mkdir -p $artifactsDir
+    
+    srcDir="obj/build/sqlite-autoconf-${sqliteVersion}"
+    log "cwd = $srcDir"
+    pushd $srcDir
+        
+        export CPPFLAGS="$CPPFLAGS -DSQLITE_ENABLE_COLUMN_METADATA=1 -DSQLITE_MAX_VARIABLE_NUMBER=250000"
+        ./configure --prefix=$(pwd) --disable-dependency-tracking --enable-dynamic-extensions
+        make install
+        
+        if [[ "$(uname)" == "Darwin" ]]; then
+            dest="$artifactsDir/libsqlite3.dylib"
+            log "Copy libsqlite3.0.dylib to $dest"
+            cp lib/libsqlite3.0.dylib $dest
+        else
+            dest="$artifactsDir/libsqlite3.so"
+            log "Copy libsqlite3.so.0.8.6 to $dest"
+            cp lib/libsqlite3.so.0.8.6 $dest
+        fi
+        
+    popd
 }
 
 _package() {
@@ -83,7 +116,7 @@ dotnet restore --verbosity minimal
 if [[ "$buildTarget" == "compile" ]]; then
     _compile
 else
-    _package --osx binaries/osx-x64.zip --linux-x86 binaries/linux-x86.zip --linux-x64 binaries/linux-x64.zip
+    _package --osx binaries/osx-x64.zip --linux binaries/linux-x64.zip
 fi
 
 if type git 2>/dev/null; then
