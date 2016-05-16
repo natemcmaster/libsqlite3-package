@@ -39,7 +39,7 @@ if(!(Test-Path $dotnet)) {
 }
 
 dotnet restore --verbosity minimal
-dotnet run -p tools/PackageBuilder/
+dotnet run -p tools/PackageBuilder/ --osx binaries/osx-x64.zip --linux binaries/linux-x64.zip
 
 if(!($VersionSuffix)) {
     $date=get-date -u "%s"
@@ -53,9 +53,4 @@ Get-ChildItem src/*/project.json | % {
 log "Cleanup useless symbols packages"
 Remove-Item artifacts/build/*.symbols.nupkg
 
-$git=(Get-Command git).Path
-if($git) {
-    log "Add commit hash to artifacts dir"
-    & $git rev-parse HEAD >> artifacts/commit 
-}
 Write-Host -ForegroundColor Green "Done"

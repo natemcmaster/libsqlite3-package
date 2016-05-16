@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.IO.Packaging;
 using System.IO.Compression;
 using System.Net.Http;
 
@@ -15,6 +14,30 @@ namespace PackageBuilder
             Console.WriteLine($"info : downloading {uri}");
             using (var client = new HttpClient())
             using (var archiveStream = client.GetStreamAsync(uri).Result)
+            {
+                Extract(archiveStream, files);
+            }
+        }
+
+        public static void OpenAndExtract(
+            string filePath,
+            params Tuple<string, string>[] files)
+        {
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException("Could not find file " + Path.Combine(Directory.GetCurrentDirectory(), filePath));
+            }
+
+            using (var archiveStream = new FileStream(filePath, FileMode.Open))
+            {
+                Extract(archiveStream, files);
+            }
+        }
+
+        private static void Extract(
+            Stream archiveStream,
+            params Tuple<string, string>[] files)
+        {
             using (var archive = new ZipArchive(archiveStream))
             {
                 foreach (var file in files)
@@ -24,7 +47,7 @@ namespace PackageBuilder
                     if (entry == null)
                     {
                         throw new FileNotFoundException("Could not find file '" + file.Item1 + "'.");
-                        
+
                     }
 
                     Directory.CreateDirectory(Path.GetDirectoryName(file.Item2));
