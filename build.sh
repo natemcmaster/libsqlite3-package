@@ -122,8 +122,4 @@ else
     _package --osx binaries/osx-x64.zip --linux binaries/linux-x64.zip
 fi
 
-if type git 2>/dev/null; then
-    log "Add commit hash to artifacts dir"
-    git rev-parse HEAD >> artifacts/commit 
-fi
 printf "${GREEN}Done${NC}\n"
