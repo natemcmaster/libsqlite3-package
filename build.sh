@@ -69,7 +69,11 @@ _compile() {
     log "cwd = $srcDir"
     pushd $srcDir
         
-        export CPPFLAGS="$CPPFLAGS -DSQLITE_ENABLE_COLUMN_METADATA=1 -DSQLITE_ENABLE_JSON1 -DSQLITE_ENABLE_FTS4 -DSQLITE_ENABLE_FTS5"
+        export CPPFLAGS="$CPPFLAGS -DSQLITE_ENABLE_COLUMN_METADATA=1 -DSQLITE_ENABLE_JSON1 -DSQLITE_ENABLE_FTS4"
+        if [[ "$(uname)" == "Darwin" ]]; then
+            export CPPFLAGS="$CPPFLAGS -DSQLITE_ENABLE_FTS5"
+        fi
+        
         ./configure --prefix=$(pwd) --disable-dependency-tracking --enable-dynamic-extensions
         make install
         
