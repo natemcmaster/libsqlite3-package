@@ -103,12 +103,12 @@ _package() {
 
     _dotnet run -p tools/PackageBuilder/ $@
 
-    if [[ "$versionSuffix" == "" ]]; then
-        versionSuffix="t$(date "+%s")"
+    if [[ "$versionSuffix" != "" ]]; then
+        versionArgs=(--version-suffix $versionSuffix)
     fi
 
     for f in src/*/project.json; do
-        _dotnet pack $f -o artifacts/build/ --version-suffix $versionSuffix
+        _dotnet pack $f -o artifacts/build/ ${versionArgs[@]}
     done
 
     log "Cleanup useless symbols packages"

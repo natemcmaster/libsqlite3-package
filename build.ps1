@@ -41,14 +41,12 @@ if(!(Test-Path $dotnet)) {
 dotnet restore --verbosity minimal
 dotnet run -p tools/PackageBuilder/ --osx binaries/osx-x64.zip --linux binaries/linux-x64.zip
 
-if(!($VersionSuffix)) {
-    $date=get-date -u "%s"
-    $date=$date.Substring(0, $date.IndexOf('.'))
-    $VersionSuffix="t$date"
+if($VersionSuffix) {
+    $versionArgs="--version-suffix",$VersionSuffix
 }
 
 Get-ChildItem src/*/project.json | % {
-    dotnet pack $_ -o artifacts/build/ --version-suffix $VersionSuffix
+    dotnet pack $_ -o artifacts/build/ @versionArgs
 }
 log "Cleanup useless symbols packages"
 Remove-Item artifacts/build/*.symbols.nupkg
