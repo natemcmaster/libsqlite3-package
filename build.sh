@@ -96,7 +96,7 @@ _package() {
         dotnetVersion="$(cat .dotnet-version)"
         log "Install dotnet $dotnetVersion"
         
-        curl https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.sh | bash -s -- -i $installDir -v $dotnetVersion
+        curl https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0-preview1/scripts/obtain/dotnet-install.sh | bash -s -- -i $installDir -v $dotnetVersion --channel beta
     fi
 
     _dotnet restore --verbosity minimal

@@ -34,8 +34,8 @@ if(!(Test-Path $dotnet)) {
     $dotnetVersion = Get-Content ".dotnet-version"
     log "Install dotnet $dotnetVersion"
     
-    iwr https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.ps1 -outfile "$installDir/dotnet-install.ps1"
-    & "$installDir/dotnet-install.ps1" -InstallDir $installDir -Version $dotnetVersion
+    iwr https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0-preview1/scripts/obtain/dotnet-install.ps1 -outfile "$installDir/dotnet-install.ps1"
+    & "$installDir/dotnet-install.ps1" -InstallDir $installDir -Version $dotnetVersion -Channel beta
 }
 
 dotnet restore --verbosity minimal
