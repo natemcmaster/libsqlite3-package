@@ -1,4 +1,5 @@
 {
+    "name": "SQLite",
     "version": "3.12.2-*",
     "copyright": "Public Domain",
     "description": "SQLite is a software library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine. This package contains native libraries for SQLite on Univeral Windows Platform apps.",
@@ -11,7 +12,7 @@
             "url": "https://github.com/aspnet/libsqlite3-package"
         },
         "tags": [
-            "sqlite",
+            "SQLite",
             "embedded",
             "database",
             "sql"
@@ -20,12 +21,12 @@
     "frameworks": {
         "netstandard1.0": {
             "dependencies": {
-                "sqlite.native": "3.12.2-*"
+                "SQLite.Native": "3.12.2-*"
             }
         },
         "uap10.0": {
             "dependencies": {
-                "sqlite.uwp.native": "3.12.2-*"
+                "SQLite.UWP.Native": "3.12.2-*"
             }
         }
     }
