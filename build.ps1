@@ -1,56 +1,124 @@
 [cmdletbinding(PositionalBinding = $false)]
 param(
-   [string]$VersionSuffix=$env:DOTNET_BUILD_VERSION
+    [string]$VersionSuffix,
+
+    [Parameter(Mandatory=$True)]
+    [string]$OsxZip,
+
+    [Parameter(Mandatory=$True)]
+    [string]$LinuxZip
 )
 
-$ErrorActionPreference="Stop"
-$ProgressPreference="SilentlyContinue"
+$ErrorActionPreference='Stop'
+$ProgressPreference='SilentlyContinue'
 
-$installDir = ".dotnet/"
-$dotnet = "$installDir/dotnet.exe"
+# 
+# Functions
+#
 
 function log($msg) {
     Write-Host -ForegroundColor Cyan "info : $msg"
 }
 
-function dotnet() {
-    log "dotnet $($args -join ' ')"
-    & $dotnet @args
-    if($LASTEXITCODE -ne 0) {
-        Write-Error "dotnet command failed"
+function Clean-Folder($path) {
+    if (Test-Path $path) {
+        Remove-Item -Recurse -Force $path | Out-Null
+    }
+    New-Item -ItemType Directory -Path $path -Force | Out-Null
+}
+
+#
+# Settings
+#
+
+$version = Get-Content -Raw $PSScriptRoot/.pack-version
+
+$artifacts= Join-Path $PSScriptRoot artifacts/build/
+$buildDir = Join-Path $PSScriptRoot bin
+$nuget = Join-Path $buildDir nuget.exe 
+
+$downloads=@(
+    @{
+        Url = "https://www.sqlite.org/2016/sqlite-dll-win32-x86-$sqliteVersion.zip"
+        Files = @{
+            'sqlite3.dll' = 'runtimes/win7-x86/native/sqlite3.dll'
+        }
+    },
+    @{
+        Url = "https://www.sqlite.org/2016/sqlite-dll-win64-x64-$sqliteVersion.zip"
+        Files = @{
+            'sqlite3.dll' = 'runtimes/win7-x64/native/sqlite3.dll'
+        }
+    },
+    @{
+        Url = "https://www.sqlite.org/2016/sqlite-uwp-$sqliteVersion.vsix"
+        Files = @{
+            'Redist/Retail/x86/sqlite3.dll' = 'runtimes/win10-x86/native/sqlite3.dll'
+            'Redist/Retail/x64/sqlite3.dll' = 'runtimes/win10-x64/native/sqlite3.dll'
+            'Redist/Retail/ARM/sqlite3.dll' = 'runtimes/win10-arm/native/sqlite3.dll'
+        }
+    },
+    @{
+        Zip = $OsxZip
+        Files = @{
+            'libsqlite3.dylib' = 'runtimes/osx-x64/native/libsqlite3.dylib'
+        }
+    },
+    @{
+        Zip = $LinuxZip
+        Files = @{
+            'libsqlite3.so' = 'runtimes/linux-x64/native/libsqlite3.so'
+        }
+    }
+)
+
+#
+# Do it
+#
+
+log 'Clean aritfacts'
+Clean-Folder $artifacts
+Clean-Folder $buildDir
+
+Copy-Item -Recurse files/ $buildDir
+
+foreach ($values in $downloads) {
+    if ($values.Url) {
+        log "downloading $($values.Url)"
+        $values.Zip = Join-Path $buildDir ([IO.Path]::GetFileName($values.Url))
+        if ($values.Zip -notlike '*.zip') {
+            $values.Zip += '.zip'
+        }
+        Invoke-WebRequest $values.Url -OutFile $values.Zip 
+    }
+    $unzip = Join-Path $buildDir ([IO.Path]::GetFileNameWithoutExtension($values.Zip))
+    log "unzip '$($values.Zip)' to '$unzip'"
+    Expand-Archive -Path $values.Zip -DestinationPath $unzip -Force
+
+    $values.Files.Keys | % {
+        $src = Join-Path $unzip $_
+        $dest = Join-Path $buildDir $values.Files[$_]
+        log "copying '$src' to '$dest'"
+
+        New-Item -Type Directory -ErrorAction Ignore -Path (Split-Path -Parent $dest) | Out-Null
+        Copy-Item $src $dest
     }
 }
 
-if (!(Test-Path $installDir)) { 
-    mkdir $installDir | out-null
+if (!(Test-Path $nuget)) {
+    Invoke-WebRequest https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile $nuget
 }
 
-if (Test-Path artifacts) {
-    log "Clean aritfacts"
-    Remove-Item -Recurse -Force artifacts/
+if ($VersionSuffix) {
+    $version = "$version-$VersionSuffix"
 }
 
-if(!(Test-Path $dotnet)) {
-    $dotnetVersion = Get-Content ".dotnet-version"
-    log "Install dotnet $dotnetVersion"
-    
-    iwr https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0-preview1/scripts/obtain/dotnet-install.ps1 -outfile "$installDir/dotnet-install.ps1"
-    & "$installDir/dotnet-install.ps1" -InstallDir $installDir -Version $dotnetVersion -Channel beta
+foreach($nuspec in Get-ChildItem nuspec/*.nuspec) {
+    log "packing '$nuspec'"
+    & $nuget pack $nuspec -basepath $buildDir -o $artifacts -version $version -verbosity detailed
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error 'pack failed'
+    }
 }
-
-dotnet restore --verbosity minimal
-dotnet run -p tools/PackageBuilder/ --osx binaries/osx-x64.zip --linux binaries/linux-x64.zip
-
-if(!($VersionSuffix)) {
-    $date=get-date -u "%s"
-    $date=$date.Substring(0, $date.IndexOf('.'))
-    $VersionSuffix="t$date"
-}
-
-Get-ChildItem src/*/project.json | % {
-    dotnet pack $_ -o artifacts/build/ --version-suffix $VersionSuffix
-}
-log "Cleanup useless symbols packages"
-Remove-Item artifacts/build/*.symbols.nupkg
 
 Write-Host -ForegroundColor Green "Done"
