@@ -32,6 +32,11 @@ function Clean-Folder($path) {
 #
 
 $version = Get-Content -Raw $PSScriptRoot/.pack-version
+$sqliteVersion = Get-Content -Raw $PSScriptRoot/.sqlite-version
+
+if ( !($version) -or !($sqliteVersion)) {
+    throw 'Could not identify versions from local files'
+}
 
 $artifacts= Join-Path $PSScriptRoot artifacts/build/
 $buildDir = Join-Path $PSScriptRoot bin
