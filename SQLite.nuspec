@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>SQLite</id>
+    <version>$version$</version>
+    <authors>SQLite Development Team</authors>
+    <owners>SQLite Development Team</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>SQLite is a software library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine. This package contains native libraries for SQLite on Univeral Windows Platform apps.</description>
+    <copyright>Public Domain</copyright>
+    <tags>SQLite,embedded,database,sql</tags>
+    <dependencies>
+      <group targetFramework=".NETStandard1.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="files/_._" target="lib/netstandard1.0/" />
+    <file src="files/SQLite.props" target="build/net45" />
+    <file src="runtimes/win7-x86/native/sqlite3.dll" target="runtimes/win7-x86/native" />
+    <file src="runtimes/win7-x64/native/sqlite3.dll" target="runtimes/win7-x64/native" />
+    <file src="runtimes/linux-x64/native/libsqlite3.so" target="runtimes/linux-x64/native" />
+    <file src="runtimes/osx-x64/native/libsqlite3.dylib" target="runtimes/osx-x64/native" />
+    <file src="runtimes/win10-x86/nativeassets/uap10.0/sqlite3.dll" target="runtimes/win10-x86/nativeassets/uap10.0" />
+    <file src="runtimes/win10-x64/nativeassets/uap10.0/sqlite3.dll" target="runtimes/win10-x64/nativeassets/uap10.0" />
+    <file src="runtimes/win10-arm/nativeassets/uap10.0/sqlite3.dll" target="runtimes/win10-arm/nativeassets/uap10.0" />
+  </files>
+</package>

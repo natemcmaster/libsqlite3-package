@@ -58,9 +58,9 @@ $downloads=@(
     @{
         Url = "https://www.sqlite.org/2016/sqlite-uwp-$sqliteVersion.vsix"
         Files = @{
-            'Redist/Retail/x86/sqlite3.dll' = 'runtimes/win10-x86/native/sqlite3.dll'
-            'Redist/Retail/x64/sqlite3.dll' = 'runtimes/win10-x64/native/sqlite3.dll'
-            'Redist/Retail/ARM/sqlite3.dll' = 'runtimes/win10-arm/native/sqlite3.dll'
+            'Redist/Retail/x86/sqlite3.dll' = 'runtimes/win10-x86/nativeassets/uap10.0/sqlite3.dll'
+            'Redist/Retail/x64/sqlite3.dll' = 'runtimes/win10-x64/nativeassets/uap10.0/sqlite3.dll'
+            'Redist/Retail/ARM/sqlite3.dll' = 'runtimes/win10-arm/nativeassets/uap10.0/sqlite3.dll'
         }
     },
     @{
@@ -118,12 +118,11 @@ if ($VersionSuffix) {
     $version = "$version-$VersionSuffix"
 }
 
-foreach($nuspec in Get-ChildItem nuspec/*.nuspec) {
-    log "packing '$nuspec'"
-    & $nuget pack $nuspec -basepath $buildDir -o $artifacts -version $version -verbosity detailed
-    if ($LASTEXITCODE -ne 0) {
-        Write-Error 'pack failed'
-    }
+$nuspec = Join-Path $PSScriptRoot 'SQLite.nuspec'
+log "packing '$nuspec'"
+& $nuget pack $nuspec -basepath $buildDir -o $artifacts -version $version -verbosity detailed
+if ($LASTEXITCODE -ne 0) {
+    Write-Error 'pack failed'
 }
 
 Write-Host -ForegroundColor Green "Done"
