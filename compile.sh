@@ -12,7 +12,7 @@ log() {
 set -e
 
 versionSuffix=$DOTNET_BUILD_VERSION
-buildTarget="package"
+buildTarget="compile"
 
 while [[ $# > 0 ]]; do
     case $1 in

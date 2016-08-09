@@ -1,6 +1,8 @@
 [cmdletbinding(PositionalBinding = $false)]
 param(
-   [string]$VersionSuffix=$env:DOTNET_BUILD_VERSION
+   [string]$VersionSuffix=$env:DOTNET_BUILD_VERSION,
+   [string]$OsxZip='binaries/osx-x64.zip',
+   [string]$LinuxZip='binaries/linux-x64.zip'
 )
 
 $ErrorActionPreference="Stop"
@@ -34,12 +36,12 @@ if(!(Test-Path $dotnet)) {
     $dotnetVersion = Get-Content ".dotnet-version"
     log "Install dotnet $dotnetVersion"
     
-    iwr https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0-preview1/scripts/obtain/dotnet-install.ps1 -outfile "$installDir/dotnet-install.ps1"
-    & "$installDir/dotnet-install.ps1" -InstallDir $installDir -Version $dotnetVersion -Channel beta
+    iwr https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0-preview2/scripts/obtain/dotnet-install.ps1 -outfile "$installDir/dotnet-install.ps1"
+    & "$installDir/dotnet-install.ps1" -InstallDir $installDir -Version $dotnetVersion -Channel preview
 }
 
 dotnet restore --verbosity minimal
-dotnet run -p tools/PackageBuilder/ --osx binaries/osx-x64.zip --linux binaries/linux-x64.zip
+dotnet run -p tools/PackageBuilder/ --osx $OsxZip --linux $LinuxZip
 
 if($VersionSuffix) {
     $versionArgs="--version-suffix",$VersionSuffix
