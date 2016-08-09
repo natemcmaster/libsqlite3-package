@@ -2,17 +2,26 @@ language: c
 sudo: required
 dist: trusty
 os:
-  - linux
-  - osx
+- linux
+- osx
 osx_image: xcode7.1
 env:
   global:
-    DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  - DOTNET_CLI_TELEMETRY_OPTOUT: 1
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+    APPVEYOR_ACCOUNT: natemcmaster
+    APPVEYOR_PROJECT: libsqlite3-package
+  - secure: fjHCnr9N6d8Uzgk3epyMAqSOs8wbJQhTaWvp8DwjB/peVGJ03E19AWSWWxh3esYvDH+utDbXK8zeRzMFQVI6hJzYMO+1XRDEOMa/SNoJJ+jRFyHpumKDypY2TsfIZdjqUdup6foEk5gUORmotf1+wnUD6A2WryKi2GgIFHmaBOiSnVlyYbFJKWB8q7xBGwUhkoUmzkq4ElhYzrASFG4srS/paF4cojZ88+BDp95ciSV/QRL8bMfU18LGM3CIMy/NN0ALevzTPlvEHKLW7llTQ0OkLywXjyqC3qJVxNX1rrXz/G3h/EXwi7RLT4rPmeNWg/8zXkq5sPzzjNsXBXVq8YuB7F6yk8x+2IlDTvpZ2nFYI7WLNDWGwuC7L1hvjpD3fUSqnatEijQ4mZPlI+QM3efvgi8dZyIsICrk6DwKxqc1ZpJGVzfRWqFUOkeD/DoNXWFR/p3ivXPL3LsXyuapI/7whJhT29gx4whC+7xp4LtrCrCn3ukO+d5HhMg+hwKRXGT2k/90vkkXQ7mwY6WX20pNwsER/9qH0KgK182y7/NBcnaXPhUcsKRBNn1vXGWH6ZlJ02x45moqC+gwjlRYUVhj83pGQY4efqA5GAexibJrutt0/3sBOzQtEO9zIgp0NqHUbJQ5cxgIjjctp3kAUXPqSK2s/YPdtLorz2nikCc=
+  - secure: gzz/If+R2JrDdEjo6DWVSPREUKRrBVCdPlJuopS3dcUnaEFswq6TT94gXwJHnALM5sqtrBcc0f8nkBf/3lejPEJxeL0mODAI02t7ZvdCEV0RfuWzzM1Rvlvb7BDuo9KpMgI7OFEW6szlJP86eU+TIX/2p059PdSmBzpR+y2Ti4YomdGAgDJwBcwFk+e/s6+HvadOVYsOGa5YoUljyiGZwPb39bZJhDxvoNAZ9I+1vDJnV8Kjoeh861SDljeXV/QalDIbU8svz8ljPLJBApF3izqvDF4curBIKwli+TG/LXAGrhtcePO5gdE6EPbh6KtuvQmHttLjWbdBLAL8ecstegvzBd/NCppcW2KpTR3J8KV1SU7e4XtKAKyZoZjqKD1xWnHgZY9FiQTT5pIsU9lVbf5OagpqQyn4/xBnc9UdCMkeRmvkbQm2LXp0SzImSRI0Rzcvkhii/KVjqInGg6inoKqr+HEvcvy3WZp8+OGotp+vYDHHpDcjP7dHG0hM9FUwpVBC0WwcdUW8gT+PeQLk26RUejF2YrvPxZ9n9SBtF+SoPh4ToOZumFdqzqn7mNQraY7dFmT/j2K22uyuLb10DobFvzLvJRXlDXu3T8ufIwDORbsM1CKSNGv3Sgt5mFFl48JcBPL7k2SwLTTHyeYUg9Dbf37UTkthDaPMfzWvuQI=
+  - secure: kGJ9TADDD1AJ9PPYSJGXl0UHmoSGKO1pzcXC8KOc/Nefg3vOGhwnAfMlHgmLA0AJpbTKZarBsQRjgjmpnjME6Eu/9dSwI+eO51BEUtNeTkwnJ2wWp1i/Nprru0rQmK9uTPqJQg91HgQW1tVoHNHwFtfPVSsreQKNoaVhf5IiGv8Sv8LopT8zBXfDMCFlBtcckxZ2fGiFmAcL388c4DbkaeiudNIVLkQca/O24n8YkiO8z/3Bp25KAOlffkoanf9dzyRNfqYUFM9AGKb93pG2dIdUef5QgG+iMCqXOMj1e+hJiOY/z+zHhR81tCrYl3/b01OIkVfVwnsvUL8ChwCF0F8etf7STwlWREW2/o6xlYUybFbWC7+MWgXex5X69c377gaaB32s5BsuL7I7ESLLmFCXz6BuHNxAtu5uPNZdHLnopxyC1mA/daRnMWu+rASfWHR5BQDSMuv0IJ6O6Y881VMCE0t3Oj295Kx9bJwioLFnSA6IFxrX77Dp2B13TrW7YdIbVyqeUj8JywLPEraI4xJ+3sjBmL2WRJ+7I1JBlr84MEGxvWcHvAZt3uoP2uuSTrlrsf1UozTsWhIlgEoYz3Kl+mNSLi6w54uQIJ8PnLZDlKOOGjgYCPywkNlVv9H52ihEigq5mw4zfZSEoflix9AojPxZIEcossDbYMELlCQ=
 matrix:
   fast_finish: true
 before_install:
-  - if test "$TRAVIS_OS_NAME" == "osx"; then brew update; brew install openssl; ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/; ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/; fi
+- if test "$TRAVIS_OS_NAME" == "osx"; then brew update; brew install openssl; ln -s
+  /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/; ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+  /usr/local/lib/; fi
 script:
-  - ./compile.sh
-  - ./test.sh
+- "./compile.sh"
+- "./test.sh"
+after_success:
+- "./deploy_artifacts.sh"

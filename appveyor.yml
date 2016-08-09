@@ -1,0 +1,17 @@
+nuget:
+  account_feed: true
+  project_feed: true
+  disable_publish_on_pr: true 
+clone_depth: 1
+test: off
+deploy: off
+environment:
+  global:
+    AZURE_ACCOUNT:
+      secure: FYmVXjX2D5Em6RojfxM6aQ==
+install:
+  - ps: .\download_artifacts.ps1
+build_script:
+  - build.cmd -OsxZip binaries/osx-x64.zip -LinuxZip binaries/linux-x64.zip
+artifacts:
+  - path: 'artifacts\build\*.nupkg'

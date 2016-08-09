@@ -1,6 +1,6 @@
 [cmdletbinding(PositionalBinding = $false)]
 param(
-    [string]$VersionSuffix,
+    [string]$VersionSuffix=$env:APPVEYOR_BUILD_NUMBER,
 
     [Parameter(Mandatory=$True)]
     [string]$OsxZip,
