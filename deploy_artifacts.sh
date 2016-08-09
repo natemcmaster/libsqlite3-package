@@ -12,7 +12,11 @@ get_resp_code() {
 set -e
 
 commit="$(git rev-parse HEAD)"
-branch="$(git rev-parse --abbrev-ref HEAD)"
+
+branch="$TRAVIS_BRANCH"
+if [[ "$branch" == "" ]]; then
+    branch="$(git rev-parse --abbrev-ref HEAD)"
+fi
 
 if [[ "$(uname)" == "Darwin" ]]; then 
     artifact="$(pwd)/artifacts/osx-x64.zip"
