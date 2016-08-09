@@ -1,6 +1,6 @@
 {
     "name": "SQLite.UWP.Native",
-    "version": "3.12.2-*",
+    "version": "3.12.3-*",
     "copyright": "Public Domain",
     "description": "SQLite is a software library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine. This package contains native libraries for SQLite on Univeral Windows Platform apps.",
     "authors": [
@@ -19,6 +19,7 @@
         ],
         "files": {
             "mappings": {
+                "lib/uap10.0/": "lib/uap10.0/*",
                 "runtimes/win10-x64/native/": "runtimes/win10-x64/native/*",
                 "runtimes/win10-x86/native/": "runtimes/win10-x86/native/*",
                 "runtimes/win10-arm/native/": "runtimes/win10-arm/native/*"

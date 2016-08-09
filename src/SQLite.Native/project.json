@@ -1,8 +1,8 @@
 {
     "name": "SQLite.Native",
-    "version": "3.12.2-*",
+    "version": "3.12.3-*",
     "copyright": "Public Domain",
-    "description": "SQLite is a software library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine. This package contains native libraries for SQLite on Univeral Windows Platform apps.",
+    "description": "SQLite is a software library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine. This package contains native libraries for SQLite on Windows, macOS, and Linux.",
     "authors": [
         "SQLite Development Team"
     ],
@@ -19,6 +19,7 @@
         ],
         "files": {
             "mappings": {
+                "lib/netstandard1.0/": "lib/netstandard1.0/*",
                 "runtimes/win7-x64/native/": "runtimes/win7-x64/native/*",
                 "runtimes/win7-x86/native/": "runtimes/win7-x86/native/*",
                 "runtimes/linux-x64/native/": "runtimes/linux-x64/native/*",
