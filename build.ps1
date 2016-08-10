@@ -1,6 +1,7 @@
 [cmdletbinding(PositionalBinding = $false)]
 param(
     [string]$VersionSuffix,
+    [string]$BuildQuality,
 
     [Parameter(Mandatory=$True)]
     [string]$OsxZip,
@@ -118,6 +119,15 @@ if ($VersionSuffix) {
     $version = "$version-$VersionSuffix"
 }
 
+if ($BuildQuality) {
+    $version += "-$BuildQuality"
+
+    if ($env:APPVEYOR_BUILD_NUMBER) {
+        $version += "-$("{0:D5}" -f [int]$env:APPVEYOR_BUILD_NUMBER)"
+    }
+}
+
+log "version string: $version"
 $nuspec = Join-Path $PSScriptRoot 'SQLite.nuspec'
 log "packing '$nuspec'"
 & $nuget pack $nuspec -basepath $buildDir -o $artifacts -version $version -verbosity detailed

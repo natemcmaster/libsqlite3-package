@@ -16,6 +16,12 @@ env:
   - secure: kGJ9TADDD1AJ9PPYSJGXl0UHmoSGKO1pzcXC8KOc/Nefg3vOGhwnAfMlHgmLA0AJpbTKZarBsQRjgjmpnjME6Eu/9dSwI+eO51BEUtNeTkwnJ2wWp1i/Nprru0rQmK9uTPqJQg91HgQW1tVoHNHwFtfPVSsreQKNoaVhf5IiGv8Sv8LopT8zBXfDMCFlBtcckxZ2fGiFmAcL388c4DbkaeiudNIVLkQca/O24n8YkiO8z/3Bp25KAOlffkoanf9dzyRNfqYUFM9AGKb93pG2dIdUef5QgG+iMCqXOMj1e+hJiOY/z+zHhR81tCrYl3/b01OIkVfVwnsvUL8ChwCF0F8etf7STwlWREW2/o6xlYUybFbWC7+MWgXex5X69c377gaaB32s5BsuL7I7ESLLmFCXz6BuHNxAtu5uPNZdHLnopxyC1mA/daRnMWu+rASfWHR5BQDSMuv0IJ6O6Y881VMCE0t3Oj295Kx9bJwioLFnSA6IFxrX77Dp2B13TrW7YdIbVyqeUj8JywLPEraI4xJ+3sjBmL2WRJ+7I1JBlr84MEGxvWcHvAZt3uoP2uuSTrlrsf1UozTsWhIlgEoYz3Kl+mNSLi6w54uQIJ8PnLZDlKOOGjgYCPywkNlVv9H52ihEigq5mw4zfZSEoflix9AojPxZIEcossDbYMELlCQ=
 matrix:
   fast_finish: true
+branches:
+  only:
+    - master
+    - release
+    - dev
+    - /^(.*\/)?ci-.*$/
 before_install:
 - if test "$TRAVIS_OS_NAME" == "osx"; then brew update; brew install openssl; ln -s
   /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/; ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib

@@ -9,9 +9,15 @@ environment:
   global:
     AZURE_ACCOUNT:
       secure: FYmVXjX2D5Em6RojfxM6aQ==
+branches:
+  only:
+    - master
+    - release
+    - dev
+    - /^(.*\/)?ci-.*$/
 install:
   - ps: .\download_artifacts.ps1
 build_script:
-  - build.cmd -VersionSuffix alpha-%APPVEYOR_BUILD_NUMBER% -OsxZip binaries/osx-x64.zip -LinuxZip binaries/linux-x64.zip
+  - build.cmd -BuildQuality alpha -OsxZip binaries/osx-x64.zip -LinuxZip binaries/linux-x64.zip
 artifacts:
   - path: 'artifacts\build\*.nupkg'
