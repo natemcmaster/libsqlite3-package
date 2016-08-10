@@ -1,10 +1,5 @@
-nuget:
-  account_feed: true
-  project_feed: true
-  disable_publish_on_pr: true 
 clone_depth: 1
 test: off
-deploy: off
 environment:
   global:
     AZURE_ACCOUNT:
@@ -16,8 +11,14 @@ branches:
     - dev
     - /^(.*\/)?ci-.*$/
 install:
-  - ps: .\download_artifacts.ps1
+  - ps: ./download_artifacts.ps1
 build_script:
   - build.cmd -BuildQuality alpha -OsxZip binaries/osx-x64.zip -LinuxZip binaries/linux-x64.zip
 artifacts:
-  - path: 'artifacts\build\*.nupkg'
+  - path: 'artifacts/build/*.nupkg'
+deploy:
+  provider: NuGet
+  server: https://www.myget.org/F/libsqlite3/api/v2/package
+  api_key:
+    secure: 1EDNc6m/9mHGHvSHZxJ6kC/rMzZl3bY4P/dBYULfhA7IAN6vT4/fZeYcqBpl9nXu
+  skip_symbols: true

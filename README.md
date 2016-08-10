@@ -3,13 +3,15 @@ libsqlite3-package
 
 [![Travis build status](https://img.shields.io/travis/natemcmaster/libsqlite3-package.svg?label=travis-ci&branch=dev&style=flat-square)](https://travis-ci.org/natemcmaster/libsqlite3-package/branches)
 [![AppVeyor build status](https://img.shields.io/appveyor/ci/natemcmaster/libsqlite3-package/dev.svg?label=appveyor&style=flat-square)](https://ci.appveyor.com/project/natemcmaster/libsqlite3-package/branch/dev)
-[![master branch](https://img.shields.io/nuget/v/SQLite.svg?style=flat-square&label=nuget)](https://www.nuget.org/packages/SQLite/)
+
+[![master branch](https://img.shields.io/nuget/v/SQLite.svg?style=flat-square&label=stable)](https://www.nuget.org/packages/SQLite/)
+[![dev branch](https://img.shields.io/myget/libsqlite3/vpre/SQLite.svg?style=flat-square&label=nightly)](https://www.myget.org/gallery/libsqlite3/) 
 
 Automates creating a NuGet package of SQLite3 native library for macOS, Linux, Universal Windows apps, and Windows.
 
 Releases are published to <https://www.nuget.org/packages/SQLite>
 
-Nightly builds are available from this NuGet feed: <https://ci.appveyor.com/nuget/libsqlite3-package>
+Nightly builds are available on MyGet: <https://www.myget.org/gallery/libsqlite3>
 
 ## Usage
 
