@@ -13,7 +13,7 @@ branches:
 install:
   - ps: ./download_artifacts.ps1
 build_script:
-  - build.cmd -BuildQuality alpha -OsxZip binaries/osx-x64.zip -LinuxZip binaries/linux-x64.zip
+  - build.cmd -OsxZip binaries/osx-x64.zip -LinuxZip binaries/linux-x64.zip
 artifacts:
   - path: 'artifacts/build/*.nupkg'
 deploy:

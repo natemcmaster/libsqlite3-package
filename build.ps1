@@ -51,6 +51,10 @@ if ( !($version) -or !($sqliteVersion)) {
     throw 'Could not identify versions from local files'
 }
 
+if (Test-Path $PSScriptRoot/docs/releasenotes/$version.txt) {
+    $releasenotes = Get-Content -Raw $PSScriptRoot/docs/releasenotes/$version.txt
+}
+
 $downloads=@(
     @{
         Url = "https://www.sqlite.org/2016/sqlite-dll-win32-x86-$sqliteVersion.zip"
@@ -130,7 +134,7 @@ if (!(Test-Path $nuget)) {
 
 $nuspec = Join-Path $PSScriptRoot 'SQLite.nuspec'
 log "packing '$nuspec'"
-& $nuget pack $nuspec -basepath $buildDir -o $artifacts -version $version -verbosity detailed
+& $nuget pack $nuspec -basepath $buildDir -o $artifacts -version $version -verbosity detailed -properties "releasenotes=$releasenotes"
 if ($LASTEXITCODE -ne 0) {
     Write-Error 'pack failed'
 }
