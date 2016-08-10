@@ -1,7 +1,6 @@
 [cmdletbinding(PositionalBinding = $false)]
 param(
-    [string]$VersionSuffix,
-    [string]$BuildQuality,
+    [int]$BuildNumber = $env:APPVEYOR_BUILD_NUMBER,
 
     [Parameter(Mandatory=$True)]
     [string]$OsxZip,
@@ -13,7 +12,7 @@ param(
 $ErrorActionPreference='Stop'
 $ProgressPreference='SilentlyContinue'
 
-# 
+#
 # Functions
 #
 
@@ -32,16 +31,25 @@ function Clean-Folder($path) {
 # Settings
 #
 
+$artifacts= Join-Path $PSScriptRoot artifacts/build/
+$buildDir = Join-Path $PSScriptRoot bin
+$nuget = Join-Path $buildDir nuget.exe
+
+$branch=${env:APPVEYOR_REPO_BRANCH}
+if (!($branch)) {
+    $branch="$(git rev-parse --abbrev-ref HEAD)"
+}
+
 $version = Get-Content -Raw $PSScriptRoot/.pack-version
+if ($BuildNumber -and ($branch -ne 'master')) {
+    $version += "-$("{0:D5}" -f $BuildNumber)"
+}
+
 $sqliteVersion = Get-Content -Raw $PSScriptRoot/.sqlite-version
 
 if ( !($version) -or !($sqliteVersion)) {
     throw 'Could not identify versions from local files'
 }
-
-$artifacts= Join-Path $PSScriptRoot artifacts/build/
-$buildDir = Join-Path $PSScriptRoot bin
-$nuget = Join-Path $buildDir nuget.exe 
 
 $downloads=@(
     @{
@@ -82,11 +90,16 @@ $downloads=@(
 # Do it
 #
 
+log "Branch: $branch"
+log "Version: $version"
+log "SQLite version: $sqliteVersion"
+
 log 'Clean aritfacts'
 Clean-Folder $artifacts
 Clean-Folder $buildDir
 
 Copy-Item -Recurse files/ $buildDir
+Copy-Item $PSScriptRoot/.sqlite-version $buildDir/files/sqlite-version.txt
 
 foreach ($values in $downloads) {
     if ($values.Url) {
@@ -95,7 +108,7 @@ foreach ($values in $downloads) {
         if ($values.Zip -notlike '*.zip') {
             $values.Zip += '.zip'
         }
-        Invoke-WebRequest $values.Url -OutFile $values.Zip 
+        Invoke-WebRequest $values.Url -OutFile $values.Zip
     }
     $unzip = Join-Path $buildDir ([IO.Path]::GetFileNameWithoutExtension($values.Zip))
     log "unzip '$($values.Zip)' to '$unzip'"
@@ -115,19 +128,6 @@ if (!(Test-Path $nuget)) {
     Invoke-WebRequest https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile $nuget
 }
 
-if ($VersionSuffix) {
-    $version = "$version-$VersionSuffix"
-}
-
-if ($BuildQuality) {
-    $version += "-$BuildQuality"
-
-    if ($env:APPVEYOR_BUILD_NUMBER) {
-        $version += "-$("{0:D5}" -f [int]$env:APPVEYOR_BUILD_NUMBER)"
-    }
-}
-
-log "version string: $version"
 $nuspec = Join-Path $PSScriptRoot 'SQLite.nuspec'
 log "packing '$nuspec'"
 & $nuget pack $nuspec -basepath $buildDir -o $artifacts -version $version -verbosity detailed

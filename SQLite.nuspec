@@ -14,6 +14,7 @@
     </dependencies>
   </metadata>
   <files>
+    <file src="files/sqlite-version.txt" target="/" />
     <file src="files/_._" target="lib/netstandard1.0/" />
     <file src="files/SQLite.props" target="build/net45" />
     <file src="runtimes/win7-x86/native/sqlite3.dll" target="runtimes/win7-x86/native" />
