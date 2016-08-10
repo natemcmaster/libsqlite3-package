@@ -1,0 +1,1 @@
+Updated native libraries to SQLite 3.14. See https://sqlite.org/releaselog/3_14.html for full details.
