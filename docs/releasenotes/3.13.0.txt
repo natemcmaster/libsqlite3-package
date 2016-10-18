@@ -1,0 +1,2 @@
+Updated native libraries to SQLite 3.13.0. 
+Consolidated native libraries into one package rather than splitting into multiple packages. This deprecated the need for the 'SQLite.Native' and 'SQLite.UWP.Native' packages.

@@ -11,36 +11,6 @@ log() {
 
 set -e
 
-versionSuffix=$DOTNET_BUILD_VERSION
-buildTarget="compile"
-
-while [[ $# > 0 ]]; do
-    case $1 in
-        --version)
-            shift
-            versionSuffix=$1
-            ;;
-        compile)
-            buildTarget="compile"
-            ;;
-        pack)
-            buildTarget="package"
-            ;;
-        *)
-            printf "${RED}Unrecognized argument $1${NC}\n"
-            exit 1
-    esac
-    shift
-done
-
-installDir=".dotnet/"
-dotnet="$installDir/dotnet"
-
-_dotnet() {
-    log "dotnet $@"
-    $dotnet $@
-}
-
 _clean() {
     log "Clean $(pwd)/artifacts/"
     rm -rf artifacts
@@ -48,7 +18,7 @@ _clean() {
 }
 
 _compile() {
-    sqliteVersion="3120200"
+    sqliteVersion="$(cat .sqlite-version)"
     log "Compiling sqlite v$sqliteVersion"
     sqliteSrc="https://sqlite.org/2016/sqlite-autoconf-${sqliteVersion}.tar.gz"
     
@@ -91,39 +61,11 @@ _compile() {
     zip -j artifacts/$rid.zip $artifactsDir/libsqlite3*
 }
 
-_package() {
-    if [[ ! -e $dotnet ]]; then
-        dotnetVersion="$(cat .dotnet-version)"
-        log "Install dotnet $dotnetVersion"
-        
-        curl https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0-preview1/scripts/obtain/dotnet-install.sh | bash -s -- -i $installDir -v $dotnetVersion --channel beta
-    fi
-
-    _dotnet restore --verbosity minimal
-
-    _dotnet run -p tools/PackageBuilder/ $@
-
-    if [[ "$versionSuffix" != "" ]]; then
-        versionArgs=(--version-suffix $versionSuffix)
-    fi
-
-    for f in src/*/project.json; do
-        _dotnet pack $f -o artifacts/build/ ${versionArgs[@]}
-    done
-
-    log "Cleanup useless symbols packages"
-    rm artifacts/build/*.symbols.nupkg
-}
-
 # main
 log "Build target = $buildTarget"
 
 _clean
 
-if [[ "$buildTarget" == "compile" ]]; then
-    _compile
-else
-    _package --osx binaries/osx-x64.zip --linux binaries/linux-x64.zip
-fi
+_compile
 
 printf "${GREEN}Done${NC}\n"
