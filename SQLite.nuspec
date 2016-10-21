@@ -22,6 +22,7 @@
     <file src="runtimes/win7-x86/native/sqlite3.dll" target="runtimes/win7-x86/native" />
     <file src="runtimes/win7-x64/native/sqlite3.dll" target="runtimes/win7-x64/native" />
     <file src="runtimes/linux-x64/native/libsqlite3.so" target="runtimes/linux-x64/native" />
+    <file src="runtimes/alpine-x64/native/libsqlite3.so" target="runtimes/alpine-x64/native" />
     <file src="runtimes/osx-x64/native/libsqlite3.dylib" target="runtimes/osx-x64/native" />
     <file src="runtimes/win10-x86/nativeassets/uap10.0/sqlite3.dll" target="runtimes/win10-x86/nativeassets/uap10.0" />
     <file src="runtimes/win10-x64/nativeassets/uap10.0/sqlite3.dll" target="runtimes/win10-x64/nativeassets/uap10.0" />

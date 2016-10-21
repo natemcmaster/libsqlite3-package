@@ -11,12 +11,6 @@ log() {
 
 set -e
 
-_clean() {
-    log "Clean $(pwd)/artifacts/"
-    rm -rf artifacts
-    mkdir -p artifacts
-}
-
 _compile() {
     sqliteVersion="$(cat .sqlite-version)"
     log "Compiling sqlite v$sqliteVersion"
@@ -27,12 +21,19 @@ _compile() {
     mkdir -p obj/build/
     
     curl -sSL $sqliteSrc | tar zvx -C obj/build/
-    if [[ "$(uname)" == "Darwin" ]]; then
+    if [[ "$rid" != "" ]]; then
+        :
+    elif [[ "$(uname)" == "Darwin" ]]; then
         rid="osx-x64"
     else
         rid="linux-x64"
     fi
+
+    log "rid = $rid"
+
     artifactsDir="$(pwd)/artifacts/$rid"
+    log "Clean $artifactsDir"
+    rm -rf $artifactsDir
     mkdir -p $artifactsDir
     
     srcDir="obj/build/sqlite-autoconf-${sqliteVersion}"
@@ -44,9 +45,18 @@ _compile() {
             export CPPFLAGS="$CPPFLAGS -DSQLITE_ENABLE_FTS5"
         fi
         
-        ./configure --prefix=$(pwd) --disable-dependency-tracking --enable-dynamic-extensions
+        ./configure --prefix=$(pwd) \
+                    --disable-dependency-tracking \
+                    --enable-dynamic-extensions || return 1
+
+        if [[ "$rid" == "alpine-x64" ]]; then
+            log "Configuring libtool for alpine"
+            sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+	        sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+        fi
+
         make install
-        
+
         if [[ "$(uname)" == "Darwin" ]]; then
             dest="$artifactsDir/libsqlite3.dylib"
             log "Copy libsqlite3.0.dylib to $dest"
@@ -63,8 +73,6 @@ _compile() {
 
 # main
 log "Build target = $buildTarget"
-
-_clean
 
 _compile
 

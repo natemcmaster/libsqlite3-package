@@ -6,7 +6,10 @@ param(
     [string]$OsxZip,
 
     [Parameter(Mandatory=$True)]
-    [string]$LinuxZip
+    [string]$LinuxZip,
+
+    [Parameter(Mandatory=$True)]
+    [string]$AlpineZip
 )
 
 $ErrorActionPreference='Stop'
@@ -86,6 +89,12 @@ $downloads=@(
         Zip = $LinuxZip
         Files = @{
             'libsqlite3.so' = 'runtimes/linux-x64/native/libsqlite3.so'
+        }
+    },
+    @{
+        Zip = $AlpineZip
+        Files = @{
+            'libsqlite3.so' = 'runtimes/alpine-x64/native/libsqlite3.so'
         }
     }
 )
