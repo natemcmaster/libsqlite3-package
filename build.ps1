@@ -62,13 +62,13 @@ $downloads=@(
     @{
         Url = "https://www.sqlite.org/2016/sqlite-dll-win32-x86-$sqliteVersion.zip"
         Files = @{
-            'sqlite3.dll' = 'runtimes/win7-x86/native/sqlite3.dll'
+            'sqlite3.dll' = 'runtimes/win-x86/native/sqlite3.dll'
         }
     },
     @{
         Url = "https://www.sqlite.org/2016/sqlite-dll-win64-x64-$sqliteVersion.zip"
         Files = @{
-            'sqlite3.dll' = 'runtimes/win7-x64/native/sqlite3.dll'
+            'sqlite3.dll' = 'runtimes/win-x64/native/sqlite3.dll'
         }
     },
     @{

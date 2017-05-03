@@ -8,4 +8,14 @@
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
   </ItemGroup>
+
+  <Target Name="CopyNativeAssets" BeforeTargets="Build">
+    <ItemGroup>
+      <SqliteFiles Include="../artifacts/osx-x64/*sqlite3.dylib" Dest="libtestsqlite3.dylib" />
+      <SqliteFiles Include="../artifacts/linux-x64/*sqlite3.so" Dest="libtestsqlite3.so" />
+    </ItemGroup>
+
+    <Copy SourceFiles="%(SqliteFiles.Identity)" DestinationFiles="$(OutDir)%(SqliteFiles.Dest)" />
+  </Target>
+
 </Project>
