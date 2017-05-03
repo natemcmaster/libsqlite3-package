@@ -13,7 +13,7 @@ branches:
 install:
   - ps: ./download_artifacts.ps1
 build_script:
-  - build.cmd -OsxZip binaries/osx-x64.zip -LinuxZip binaries/linux-x64.zip -AlpineZip binaries/alpine-x64.zip
+  - ps: build.ps1 -OsxZip binaries/osx-x64.zip -LinuxZip binaries/linux-x64.zip -AlpineZip binaries/alpine-x64.zip
 artifacts:
   - path: 'artifacts/build/*.nupkg'
 deploy:
@@ -22,3 +22,4 @@ deploy:
   api_key:
     secure: 1EDNc6m/9mHGHvSHZxJ6kC/rMzZl3bY4P/dBYULfhA7IAN6vT4/fZeYcqBpl9nXu
   skip_symbols: true
+os: Visual Studio 2017

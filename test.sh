@@ -1,12 +1,19 @@
 #!/usr/bin/env bash
 
-set -e
+version='1.0.3'
+dotnet="$(which dotnet)"
 
-DOTNET_HOME="$(pwd)/.dotnet"
-dotnet="$DOTNET_HOME/dotnet"
-if [[ ! -e $dotnet ]]; then
-    curl -sSL https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0-preview2/scripts/obtain/dotnet-install.sh | bash -s -- -i $DOTNET_HOME --version 1.0.0-preview2-003131
+if [[ "$dotnet" == "" ]] || [[ "$($dotnet --version)" != "$version"  ]] ; then
+    set -e
+    DOTNET_HOME="$(pwd)/.dotnet"
+    dotnet="$DOTNET_HOME/dotnet"
+    if [[ ! -e $dotnet ]]; then
+        curl -sSL https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.sh \
+            | bash -s -- -i $DOTNET_HOME --version $version
+    fi
 fi
+
+set -e
 
 pushd test
 
