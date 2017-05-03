@@ -13,6 +13,11 @@ if [[ "$dotnet" == "" ]] || [[ "$($dotnet --version)" != "$version"  ]] ; then
     fi
 fi
 
+if [[ "$(uname)" == "Darwin" ]]; then
+    # Increase file descriptor limit so dotnet-restore won't fail
+    ulimit -n 2048
+fi
+
 set -e
 
 pushd test
