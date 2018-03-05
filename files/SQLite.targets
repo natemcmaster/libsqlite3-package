@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Target Name="SQLite_Native_CopyFiles_AnyCPU" BeforeTargets="PrepareForBuild" Condition="'$(Platform)' == 'AnyCPU'">
+		<ItemGroup>
+		  <SQLiteFiles_X86 Include="$(MSBuildThisFileDirectory)..\..\runtimes\win7-x86\native\**\*" />
+		  <SQLiteFiles_X64 Include="$(MSBuildThisFileDirectory)..\..\runtimes\win7-x64\native\**\*" />
+		</ItemGroup>
+		
+		<Message Text="Copying SQLite files to target directory $(TargetDir)\x86" Importance="high"/>
+		<Message Text="Copying %(SQLiteFiles_X86.Identity)" Importance="low"/>
+		
+		
+		<Copy 
+		  SourceFiles="@(SQLiteFiles_X86)" 
+		  DestinationFolder="$([System.IO.Path]::Combine($(TargetDir),x86)))%(RecursiveDir)" 
+		  SkipUnchangedFiles="true" 
+		  Condition="'@(SQLiteFiles_X86->Count())' &gt; 0"
+		/>
+		
+		<Message Text="Copying SQLite files to target directory $(TargetDir)\x64" Importance="high"/>
+		<Message Text="Copying %(SQLiteFiles_X64.Identity)" Importance="low"/>
+		
+		<Copy 
+		  SourceFiles="@(SQLiteFiles_X64)" 
+		  DestinationFolder="$([System.IO.Path]::Combine($(TargetDir),x64)))%(RecursiveDir)" 
+		  SkipUnchangedFiles="true" 
+		  Condition="'@(SQLiteFiles_X64->Count())' &gt; 0"
+		/>
+	</Target>
+
+	<Target Name="SQLite_Native_CopyFiles_X86" BeforeTargets="PrepareForBuild" Condition="'$(Platform)' == 'x86'">
+		<ItemGroup>
+		  <SQLiteFiles_X86 Include="$(MSBuildThisFileDirectory)..\..\runtimes\win7-x86\native\**\*" />
+		</ItemGroup>
+		
+		<Message Text="Copying SQLite files to target directory $(TargetDir)" Importance="high"/>
+		<Message Text="Copying %(SQLiteFiles_X86.Identity)" Importance="low"/>
+		
+		<Copy 
+		  SourceFiles="@(SQLiteFiles_X86)" 
+		  DestinationFolder="$(TargetDir)%(RecursiveDir)" 
+		  SkipUnchangedFiles="true" 
+		  Condition="'@(SQLiteFiles_X86->Count())' &gt; 0"
+		/>
+	</Target>
+	
+	<Target Name="SQLite_Native_CopyFiles_X64" BeforeTargets="PrepareForBuild" Condition="'$(Platform)' == 'x64'">
+		<ItemGroup>
+		  <SQLiteFiles_X64 Include="$(MSBuildThisFileDirectory)..\..\runtimes\win7-x64\native\**\*" />
+		</ItemGroup>
+		
+		<Message Text="Copying SQLite files to target directory $(TargetDir)" Importance="high"/>
+		<Message Text="Copying %(SQLiteFiles_X64.Identity)" Importance="low"/>
+
+		<Copy 
+		  SourceFiles="@(SQLiteFiles_X64)" 
+		  DestinationFolder="$(TargetDir)%(RecursiveDir)" 
+		  SkipUnchangedFiles="true" 
+		  Condition="'@(SQLiteFiles_X64->Count())' &gt; 0"
+		/>
+  </Target>
+</Project>
