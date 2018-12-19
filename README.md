@@ -1,5 +1,7 @@
-libsqlite3-package
-------------------
+libsqlite3-package [Archived]
+-----------------------------
+
+**This project has been archived because I no longer maintain or support this package.** Please reach out to me https://github.com/natemcmaster/blog if you have questions or concerns.
 
 [![Travis build status](https://img.shields.io/travis/natemcmaster/libsqlite3-package.svg?label=travis-ci&branch=dev&style=flat-square)](https://travis-ci.org/natemcmaster/libsqlite3-package/branches)
 [![AppVeyor build status](https://img.shields.io/appveyor/ci/natemcmaster/libsqlite3-package/dev.svg?label=appveyor&style=flat-square)](https://ci.appveyor.com/project/natemcmaster/libsqlite3-package/branch/dev)
